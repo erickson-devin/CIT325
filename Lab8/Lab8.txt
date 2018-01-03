@@ -1,0 +1,100 @@
+Package dropped.
+
+
+Warning: Package created with compilation errors.
+
+        INSERT INTO system_user
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (STUDENT.FK_SYSTEM_USER_3) violated - parent
+key not found 
+
+
+        INSERT INTO system_user
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (STUDENT.FK_SYSTEM_USER_3) violated - parent
+key not found 
+
+
+        INSERT INTO system_user
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (STUDENT.FK_SYSTEM_USER_3) violated - parent
+key not found 
+
+
+
+no rows selected
+
+        , pv_user_id => '');
+        *
+ERROR at line 20:
+ORA-06550: line 20, column 9:
+PLS-00103: Encountered the symbol "," when expecting one of the following: 
+:= . ( % ;
+ORA-06550: line 20, column 28:
+PLS-00103: Encountered the symbol ";" when expecting one of the following: 
+. ( ) , * % & = - + < / > at in is mod remainder not rem 
+<an exponent (**)> <> or != or ~= >= <= <> and or like like2 
+like4 likec between || multiset me 
+
+
+        , pv_user_id => '');
+        *
+ERROR at line 20:
+ORA-06550: line 20, column 9:
+PLS-00103: Encountered the symbol "," when expecting one of the following: 
+:= . ( % ;
+ORA-06550: line 20, column 28:
+PLS-00103: Encountered the symbol ";" when expecting one of the following: 
+. ( ) , * % & = - + < / > at in is mod remainder not rem 
+<an exponent (**)> <> or != or ~= >= <= <> and or like like2 
+like4 likec between || multiset me 
+
+
+        contact_package.insert_contact
+        *
+ERROR at line 2:
+ORA-06550: line 2, column 9:
+PLS-00905: object STUDENT.CONTACT_PACKAGE is invalid
+ORA-06550: line 2, column 9:
+PL/SQL: Statement ignored 
+
+
+
+no rows selected
+
+        , pv_user_id => '');
+        *
+ERROR at line 20:
+ORA-06550: line 20, column 9:
+PLS-00103: Encountered the symbol "," when expecting one of the following: 
+:= . ( % ;
+ORA-06550: line 20, column 28:
+PLS-00103: Encountered the symbol ";" when expecting one of the following: 
+. ( ) , * % & = - + < / > at in is mod remainder not rem 
+<an exponent (**)> <> or != or ~= >= <= <> and or like like2 
+like4 likec between || multiset me 
+
+
+        contact_package.insert_contact
+        *
+ERROR at line 2:
+ORA-06550: line 2, column 9:
+PLS-00905: object STUDENT.CONTACT_PACKAGE is invalid
+ORA-06550: line 2, column 9:
+PL/SQL: Statement ignored 
+
+
+        contact_package.insert_contact
+        *
+ERROR at line 2:
+ORA-06550: line 2, column 9:
+PLS-00905: object STUDENT.CONTACT_PACKAGE is invalid
+ORA-06550: line 2, column 9:
+PL/SQL: Statement ignored 
+
+
+
+no rows selected

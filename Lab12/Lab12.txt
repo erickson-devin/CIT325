@@ -1,0 +1,148 @@
+==============================                                                  
+Part 1                                                                          
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+Type dropped.
+
+
+Type dropped.
+
+
+Type created.
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TITLE                                              VARCHAR2(60)
+ SUBTITLE                                           VARCHAR2(60)
+ RATING                                             VARCHAR2(8)
+ RELEASE_DATE                                       DATE
+
+
+Type created.
+
+ item_tab TABLE OF ITEM_OBJ
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TITLE                                              VARCHAR2(60)
+ SUBTITLE                                           VARCHAR2(60)
+ RATING                                             VARCHAR2(8)
+ RELEASE_DATE                                       DATE
+
+
+Function created.
+
+FUNCTION item_list RETURNS ITEM_TAB
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ PV_START_DATE                  DATE                    IN    
+ PV_END_DATE                    DATE                    IN     DEFAULT
+
+==============================                                                  
+Test Case #1                                                                    
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+Around the World in 80 Days                                  NR                 
+Around the World in 80 Days                                  PG                 
+Casino Royale                                                PG-13              
+Casino Royale                                                PG-13              
+Die Another Day                                              PG-13              
+Die Another Day                                              PG-13              
+Die Another Day                                              PG-13              
+Golden Eye                                                   PG-13              
+Golden Eye                                                   PG-13              
+Tomorrow Never Dies                                          PG-13              
+The World Is Not Enough                                      PG-13              
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+The World Is Not Enough                                      PG-13              
+Brave Heart                                                  R                  
+Christmas Carol                                              NR                 
+Scrooge                                                      G                  
+Clear and Present Danger                                     PG-13              
+Harry Potter and the Sorcer's Stone                          PG                 
+Harry Potter and the Sorcer's Stone                          PG                 
+Harry Potter and the Chamber of Secrets                      PG                 
+Harry Potter and the Chamber of Secrets                      PG                 
+Harry Potter and the Prisoner of Azkaban                     PG                 
+Harry Potter and the Prisoner of Azkaban                     PG                 
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+Harry Potter and the Chamber of Secrets                      PG                 
+Harry Potter and the Goblet of Fire                          PG-13              
+Harry Potter and the Goblet of Fire                          PG-13              
+Harry Potter and the Goblet of Fire                          PG-13              
+Harry Potter and the Order of the Phoenix                    PG-13              
+The Hunt for Red October                                     PG                 
+King Arthur - The Director's Cut                             R                  
+King Arthur                                                  PG-13              
+King Arthur - The Director's Cut                             R                  
+The Lord of the Rings - Fellowship of the Ring               PG-13              
+The Lord of the Rings - Fellowship of the Ring               PG-13              
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+The Lord of the Rings - Fellowship of the Ring               PG-13              
+The Lord of the Rings - Two Towers                           PG-13              
+The Lord of the Rings - Two Towers                           PG-13              
+The Lord of the Rings - Two Towers                           PG-13              
+The Lord of the Rings - The Return of the King               PG-13              
+The Lord of the Rings - The Return of the King               PG-13              
+The Lord of the Rings - The Return of the King               PG-13              
+The Patriot Games                                            R                  
+Pirates of the Caribbean - The Curse of the Black Pearl      PG-13              
+Pirates of the Caribbean - The Curse of the Black Pearl      PG-13              
+Pirates of the Caribbean - The Curse of the Black Pearl      PG-13              
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+Pirates of the Caribbean - Dead Man's Chest                  PG-13              
+Pirates of the Caribbean - Dead Man's Chest                  PG-13              
+Pirates of the Caribbean - At World's End                    PG-13              
+Pirates of the Caribbean - At World's End                    PG-13              
+Indiana Jones and the Raiders of the Lost Ark                PG                 
+Indiana Jones and the Raiders of the Lost Ark                PG                 
+Indiana Jones and the Temple of Doom                         PG                 
+Indiana Jones and the Temple of Doom                         PG                 
+Indiana Jones and the Last Crusade                           PG-13              
+Indiana Jones and the Last Crusade                           PG-13              
+Spider-Man                                                   PG-13              
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+Spider-Man                                                   PG-13              
+Spider-Man 2                                                 PG-13              
+Spider-Man 2                                                 PG-13              
+Spider-Man 3                                                 PG-13              
+Spider-Man 3                                                 PG-13              
+Star Wars - Episode I                                        PG                 
+Star Wars - Episode II                                       PG                 
+Star Wars - Episode II                                       PG                 
+Star Wars - Episode III                                      PG-13              
+Star Wars - Episode III                                      PG-13              
+Star Wars - Episode IV                                       PG                 
+
+TITLE                                                        RATING             
+------------------------------------------------------------ --------           
+Star Wars - Episode IV                                       PG                 
+Star Wars - Episode V                                        PG                 
+Star Wars - Episode V                                        PG                 
+Star Wars - Episode VI                                       PG                 
+Star Wars - Episode VI                                       PG                 
+The Sum of All Fears                                         PG-13              
+The Patriot                                                  R                  
+The Patriot                                                  NR                 
+We Were Soldiers                                             R                  
+Chronicles of Narnia - The Lion, the Witch and the Wardrobe  PG                 
+Chronicles of Narnia - The Lion, the Witch and the Wardrobe  PG                 
+
+77 rows selected.

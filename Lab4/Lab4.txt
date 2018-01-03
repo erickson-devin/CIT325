@@ -1,0 +1,26 @@
+        TYPE day_name IS TABLE OF DAYS;
+                                  *
+ERROR at line 3:
+ORA-06550: line 3, column 35:
+PLS-00201: identifier 'DAYS' must be declared
+ORA-06550: line 3, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 4, column 36:
+PLS-00201: identifier 'GIFTS' must be declared
+ORA-06550: line 4, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 6, column 21:
+PLS-00201: identifier 'DAYS' must be declared
+ORA-06550: line 6, column 21:
+PL/SQL: Item ignored
+ORA-06550: line 19, column 22:
+PLS-00201: identifier 'GIFT' must be declared
+ORA-06550: line 19, column 22:
+PL/SQL: Item ignored
+ORA-06550: line 35, column 43:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 35, column 9:
+PL/SQL: Statement ignored 
+
+

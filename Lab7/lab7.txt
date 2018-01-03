@@ -1,0 +1,42 @@
+
+SYSTEM_USER_ID SYSTEM_USER_NAME                                                 
+-------------- --------------------                                             
+             2 DBA                                                              
+             3 DBA                                                              
+             4 DBA                                                              
+             5 DBA                                                              
+
+4 rows selected.
+
+
+4 rows updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+SYSTEM_USER_ID SYSTEM_USER_NAME                                                 
+-------------- --------------------                                             
+             2 DBA 1                                                            
+             3 DBA 2                                                            
+             4 DBA 3                                                            
+             5 DBA 4                                                            
+
+4 rows selected.
+
+
+PL/SQL procedure successfully completed.
+
+
+no rows selected
+
+
+no rows selected
+
+
+no rows selected
+
+FROM   TABLE(get_contact)
+             *
+ERROR at line 6:
+ORA-00904: "GET_CONTACT": invalid identifier 
