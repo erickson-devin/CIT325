@@ -1,0 +1,405 @@
+==============================                                                  
+Part 0                                                                          
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+Sequence dropped.
+
+
+Table dropped.
+
+
+Type dropped.
+
+
+Type dropped.
+
+
+Type created.
+
+ fruit_t is NOT FINAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ONAME                                              VARCHAR2(30)
+ NAME                                               VARCHAR2(30)
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION FRUIT_T RETURNS SELF AS RESULT
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION FRUIT_T RETURNS SELF AS RESULT
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+ NAME                           VARCHAR2                IN    
+
+METHOD
+------
+ MEMBER FUNCTION GET_NAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER FUNCTION GET_ONAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER PROCEDURE SET_ONAME
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+
+METHOD
+------
+ MEMBER FUNCTION TO_STRING RETURNS VARCHAR2
+
+
+Type body created.
+
+Default  : [FRUIT_T]                                                            
+Override : [SUBSTITUTE]                                                         
+
+PL/SQL procedure successfully completed.
+
+
+Table created.
+
+
+Sequence created.
+
+
+1 row created.
+
+  , name => 'NEW' )
+                  *
+ERROR at line 6:
+ORA-00917: missing comma 
+
+
+
+PL/SQL procedure successfully completed.
+
+
+   CART_ID ONAME                GET_NAME             TO_STRING                  
+---------- -------------------- -------------------- --------------------       
+         1 FRUIT_T              Unset                [FRUIT_T]                  
+         2 FRUIT_T              Unset                [FRUIT_T]                  
+
+
+Type created.
+
+ apple_t extends STUDENT.FRUIT_T
+ apple_t is NOT FINAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ONAME                                              VARCHAR2(30)
+ NAME                                               VARCHAR2(30)
+ VARIETY                                            VARCHAR2(20)
+ CLASS_SIZE                                         VARCHAR2(20)
+
+METHOD
+------
+ MEMBER FUNCTION GET_ONAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER PROCEDURE SET_ONAME
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION APPLE_T RETURNS SELF AS RESULT
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+ NAME                           VARCHAR2                IN    
+ VARIETY                        VARCHAR2                IN    
+ CLASS_SIZE                     VARCHAR2                IN    
+
+METHOD
+------
+ MEMBER FUNCTION GET_NAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER FUNCTION TO_STRING RETURNS VARCHAR2
+
+
+Type body created.
+
+
+1 row created.
+
+
+   CART_ID ONAME                GET_NAME             TO_STRING                  
+---------- -------------------- -------------------- --------------------       
+         1 FRUIT_T              Unset                [FRUIT_T]                  
+         2 FRUIT_T              Unset                [FRUIT_T]                  
+         3 APPLE_T              NEW                  [APPLE_T].[NEW]            
+
+==============================                                                  
+Part 1                                                                          
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Sequence dropped.
+
+
+Type dropped.
+
+
+Type dropped.
+
+
+Type dropped.
+
+
+Type created.
+
+ base_t is NOT FINAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ONAME                                              VARCHAR2(30)
+ NAME                                               VARCHAR2(30)
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION BASE_T RETURNS SELF AS RESULT
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION BASE_T RETURNS SELF AS RESULT
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+ NAME                           VARCHAR2                IN    
+
+METHOD
+------
+ MEMBER FUNCTION GET_NAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER FUNCTION GET_ONAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER PROCEDURE SET_ONAME
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+
+METHOD
+------
+ MEMBER FUNCTION TO_STRING RETURNS VARCHAR2
+
+
+Table created.
+
+
+Sequence created.
+
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ LOGGER_ID                                          NUMBER
+ LOG_TEXT                                           BASE_T
+
+
+Type body created.
+
+==============================                                                  
+Test Case #1                                                                    
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+==============================                                                  
+Test Case #1                                                                    
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+  5* END;default oname attribute value, set the instance value of the oname
+SP2-0158: unknown ATTRIBUTE option "a"
+SP2-0734: unknown command beginning "value with..." - rest of line ignored.
+Default  : [BASE_T]                                                             
+Override : [SUBSTITUTE]                                                         
+
+PL/SQL procedure successfully completed.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+ LOGGER_ID ONAME                GET_NAME             TO_STRING                  
+---------- -------------------- -------------------- --------------------       
+         1 BASE_T               Unset                [BASE_T]                   
+         2 BASE_T               NEW                  [BASE_T]                   
+
+==============================                                                  
+Part 2                                                                          
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+Type created.
+
+ item_t extends STUDENT.BASE_T
+ item_t is NOT FINAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ONAME                                              VARCHAR2(30)
+ NAME                                               VARCHAR2(30)
+ ITEM_ID                                            NUMBER
+ ITEM_BARCODE                                       VARCHAR2(20)
+ ITEM_TYPE                                          NUMBER
+ ITEM_TITLE                                         VARCHAR2(60)
+ ITEM_SUBTITLE                                      VARCHAR2(60)
+ ITEM_RATING                                        VARCHAR2(8)
+ ITEM_RATING_AGENCY                                 VARCHAR2(4)
+ ITEM_RELEASE_DATE                                  DATE
+ CREATED_BY                                         NUMBER
+ CREATION_DATE                                      DATE
+ LAST_UPDATED_BY                                    NUMBER
+ LAST_UPDATE_DATE                                   DATE
+
+METHOD
+------
+ MEMBER FUNCTION GET_ONAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER PROCEDURE SET_ONAME
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION ITEM_T RETURNS SELF AS RESULT
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+ NAME                           VARCHAR2                IN    
+ ITEM_ID                        NUMBER                  IN    
+ ITEM_BARCODE                   VARCHAR2                IN    
+ ITEM_TYPE                      NUMBER                  IN    
+ ITEM_TITLE                     VARCHAR2                IN    
+ ITEM_SUBTITLE                  VARCHAR2                IN    
+ ITEM_RATING                    VARCHAR2                IN    
+ ITEM_RATING_AGENCY             VARCHAR2                IN    
+ ITEM_RELEASE_DATE              DATE                    IN    
+ CREATED_BY                     NUMBER                  IN    
+ CREATION_DATE                  DATE                    IN    
+ LAST_UPDATED_BY                NUMBER                  IN    
+ LAST_UPDATE_DATE               DATE                    IN    
+
+METHOD
+------
+ MEMBER FUNCTION GET_NAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER FUNCTION TO_STRING RETURNS VARCHAR2
+
+
+Warning: Type Body created with compilation errors.
+
+Errors for TYPE BODY ITEM_T:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+27/7     PLS-00103: Encountered the symbol "SELF" when expecting one of         
+         the following:                                                         
+         end not pragma final instantiable order overriding static              
+         member constructor map                                                 
+                                                                                
+27/42    PLS-00103: Encountered the symbol ";" when expecting one of the        
+         following:                                                             
+         . ( ) , * @ % & = - + < / > at in is mod remainder not rem             
+         <an exponent (**)> <> or != or ~= >= <= <> and or like like2           
+         like4 likec between || multiset member submultiset                     
+                                                                                
+
+Type created.
+
+ contact_t extends STUDENT.BASE_T
+ contact_t is NOT FINAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ONAME                                              VARCHAR2(30)
+ NAME                                               VARCHAR2(30)
+ CONTACT_ID                                         NUMBER
+ MEMBER_ID                                          NUMBER
+ CONTACT_TYPE                                       NUMBER
+ FIRST_NAME                                         VARCHAR2(60)
+ MIDDLE_NAME                                        VARCHAR2(60)
+ LAST_NAME                                          VARCHAR2(8)
+ CREATED_BY                                         NUMBER
+ CREATION_DATE                                      DATE
+ LAST_UPDATED_BY                                    NUMBER
+ LAST_UPDATE_DATE                                   DATE
+
+METHOD
+------
+ MEMBER FUNCTION GET_ONAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER PROCEDURE SET_ONAME
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+
+METHOD
+------
+ FINAL CONSTRUCTOR FUNCTION CONTACT_T RETURNS SELF AS RESULT
+ Argument Name                  Type                    In/Out Default?
+ ------------------------------ ----------------------- ------ --------
+ ONAME                          VARCHAR2                IN    
+ NAME                           VARCHAR2                IN    
+ CONTACT_ID                     NUMBER                  IN    
+ MEMBER_ID                      NUMBER                  IN    
+ CONTACT_TYPE                   NUMBER                  IN    
+ FIRST_NAME                     VARCHAR2                IN    
+ MIDDLE_NAME                    VARCHAR2                IN    
+ LAST_NAME                      VARCHAR2                IN    
+ CREATED_BY                     NUMBER                  IN    
+ CREATION_DATE                  DATE                    IN    
+ LAST_UPDATED_BY                NUMBER                  IN    
+ LAST_UPDATE_DATE               DATE                    IN    
+
+METHOD
+------
+ MEMBER FUNCTION GET_NAME RETURNS VARCHAR2
+
+METHOD
+------
+ MEMBER FUNCTION TO_STRING RETURNS VARCHAR2
+
+
+Warning: Type Body created with compilation errors.
+
+==============================                                                  
+Test Case #2                                                                    
+==============================                                                  
+
+PL/SQL procedure successfully completed.
+
+
+no rows selected
+

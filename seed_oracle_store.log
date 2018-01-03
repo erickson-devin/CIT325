@@ -1,0 +1,1392 @@
+SQL> 
+SQL> -- Set SQL*Plus environment variables.
+SQL> SET ECHO ON
+SQL> SET FEEDBACK ON
+SQL> SET NULL '<Null>'
+SQL> SET PAGESIZE 999
+SQL> SET SERVEROUTPUT ON
+SQL> 
+SQL> -- Insert statement demonstrates a mandatory-only column override signature.
+SQL> -- ------------------------------------------------------------------
+SQL> -- TIP: When a comment ends the last line, you must use a forward slash on
+SQL> --      on the next line to run the statement rather than a semicolon.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT
+  2  INTO system_user
+  3  ( system_user_id
+  4  , system_user_name
+  5  , system_user_group_id
+  6  , system_user_type
+  7  , last_name
+  8  , first_name
+  9  , created_by
+ 10  , creation_date
+ 11  , last_updated_by
+ 12  , last_update_date)
+ 13  VALUES
+ 14  ( 2		 -- system_user_id
+ 15  ,'DBA'		 -- system_user_name
+ 16  , 2		 -- system_user_group_id
+ 17  , 2		 -- system_user_type
+ 18  ,'Adams'		 -- last_name
+ 19  ,'Samuel'		 -- middle_name
+ 20  , 1		 -- created_by
+ 21  , SYSDATE		 -- creation_date
+ 22  , 1		 -- last_updated_by
+ 23  , SYSDATE) 	 -- last_update_date
+ 24  /
+
+1 row created.
+
+SQL> 
+SQL> -- A variation on the override signature.
+SQL> -- ------------------------------------------------------------------
+SQL> -- TIP: When omitting column names for values, you may use the semicolon
+SQL> --      on the last line to execute the query.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT
+  2  INTO system_user
+  3  ( system_user_id
+  4  , system_user_name
+  5  , system_user_group_id
+  6  , system_user_type
+  7  , last_name
+  8  , first_name
+  9  , created_by
+ 10  , creation_date
+ 11  , last_updated_by
+ 12  , last_update_date)
+ 13  VALUES
+ 14  ( 3,'DBA', 2, 2,'Henry','Patrick', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- A default signatures must mirror the order of columns in the data catalog.
+SQL> INSERT
+  2  INTO system_user
+  3  VALUES
+  4  ( 4
+  5  ,'DBA'
+  6  , 2
+  7  , 2
+  8  ,'Manmohan'
+  9  , NULL		 -- Optional parameters must be provided a null value in a default signature.
+ 10  ,'Puri'
+ 11  , 1
+ 12  , SYSDATE
+ 13  , 1
+ 14  , SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- This seeds rows in a dependency chain, including the MEMBER, CONTACT
+SQL> -- ADDRESS, and TELEPHONE tables.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert record set #1.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO member VALUES
+  2  ( member_s1.nextval
+  3  , NULL
+  4  ,'B293-71445'
+  5  ,'1111-2222-3333-4444'
+  6  ,(SELECT	common_lookup_id
+  7    FROM	common_lookup
+  8    WHERE	common_lookup_context = 'MEMBER'
+  9    AND	common_lookup_type = 'DISCOVER_CARD')
+ 10  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Randi','','Winn'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'10 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','111-1111'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Brian','','Winn'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'10 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','111-1111'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert record set #2.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO member VALUES
+  2  ( member_s1.nextval
+  3  , NULL
+  4  ,'B293-71446'
+  5  ,'2222-3333-4444-5555'
+  6  ,(SELECT	common_lookup_id
+  7    FROM	common_lookup
+  8    WHERE	common_lookup_context = 'MEMBER'
+  9    AND	common_lookup_type = 'DISCOVER_CARD')
+ 10  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Oscar','','Vizquel'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'12 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','222-2222'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Doreen','','Vizquel'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'12 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','222-2222'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert record set #3.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO member VALUES
+  2  ( member_s1.nextval
+  3  , NULL
+  4  ,'B293-71447'
+  5  ,'3333-4444-5555-6666'
+  6  ,(SELECT	common_lookup_id
+  7    FROM	common_lookup
+  8    WHERE	common_lookup_context = 'MEMBER'
+  9    AND	common_lookup_type = 'DISCOVER_CARD')
+ 10  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Meaghan','','Sweeney'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'14 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','333-3333'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Matthew','','Sweeney'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'14 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','333-3333'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO contact VALUES
+  2  ( contact_s1.nextval
+  3  , member_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_context = 'CONTACT'
+  7    AND	common_lookup_type = 'CUSTOMER')
+  8  ,'Ian','M','Sweeney'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO address VALUES
+  2  ( address_s1.nextval
+  3  , contact_s1.currval
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'HOME')
+  7  ,'San Jose','CA','95192'
+  8  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO street_address VALUES
+  2  ( street_address_s1.nextval
+  3  , address_s1.currval
+  4  ,'14 El Camino Real'
+  5  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO telephone VALUES
+  2  ( telephone_s1.nextval
+  3  , address_s1.currval
+  4  , contact_s1.currval
+  5  ,(SELECT	common_lookup_id
+  6    FROM	common_lookup
+  7    WHERE	common_lookup_type = 'HOME')
+  8  ,'USA','408','333-3333'
+  9  , 2, SYSDATE, 2, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert 21 rows in the ITEM table.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'9736-05640-4'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_WIDE_SCREEN')
+  7  ,'The Hunt for Red October','Special Collector''s Edition','PG'
+  8  ,'02-MAR-90'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'24543-02392'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_WIDE_SCREEN')
+  7  ,'Star Wars I','Phantom Menace','PG'
+  8  ,'04-MAY-99'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'24543-5615'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_FULL_SCREEN')
+  7  ,'Star Wars II','Attack of the Clones','PG'
+  8  ,'16-MAY-02'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'24543-05539'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_WIDE_SCREEN')
+  7  ,'Star Wars II','Attack of the Clones','PG'
+  8  ,'16-MAY-02'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'24543-20309'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_WIDE_SCREEN')
+  7  ,'Star Wars III','Revenge of the Sith','PG13'
+  8  ,'19-MAY-05'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'86936-70380'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'DVD_WIDE_SCREEN')
+  7  ,'The Chronicles of Narnia'
+  8  ,'The Lion, the Witch and the Wardrobe','PG'
+  9  ,'16-MAY-02'
+ 10  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'91493-06475'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'XBOX')
+  7  ,'RoboCop','','Mature'
+  8  ,'24-JUL-03'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'93155-11810'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'XBOX')
+  7  ,'Pirates of the Caribbean','','Teen','30-JUN-03'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'12725-00173'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'XBOX')
+  7  ,'The Chronicles of Narnia'
+  8  ,'The Lion, the Witch and the Wardrobe','Everyone','30-JUN-03'
+  9  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'45496-96128'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'NINTENDO_GAMECUBE')
+  7  ,'MarioKart','Double Dash','Everyone','17-NOV-03'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'08888-32214'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'PLAYSTATION2')
+  7  ,'Splinter Cell','Chaos Theory','Teen','08-APR-03'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'14633-14821'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'PLAYSTATION2')
+  7  ,'Need for Speed','Most Wanted','Everyone','15-NOV-04'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'10425-29944'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'XBOX')
+  7  ,'The DaVinci Code','','Teen','19-MAY-06'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'52919-52057'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'XBOX')
+  7  ,'Cars','','Everyone','28-APR-06'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'9689-80547-3'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'Beau Geste','','PG','01-MAR-92'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'53939-64103'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'I Remember Mama','','NR','05-JAN-98'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'24543-01292'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'Tora! Tora! Tora!','The Attack on Pearl Harbor','G','02-NOV-99'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'43396-60047'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'A Man for All Seasons','','G','28-JUN-94'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'43396-70603'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'Hook','','PG','11-DEC-91'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'85391-13213'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'Around the World in 80 Days','','G','04-DEC-92'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO item VALUES
+  2  ( item_s1.nextval
+  3  ,'85391-10843'
+  4  ,(SELECT	common_lookup_id
+  5    FROM	common_lookup
+  6    WHERE	common_lookup_type = 'BLU-RAY')
+  7  ,'Camelot','','G','15-MAY-98'
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Inserts 5 rentals with 9 dependent rental items.  This section inserts
+SQL> -- 5 rows in the RENTAL table, then 9 rows in the RENTAL_ITEM table. The
+SQL> -- inserts into the RENTAL_ITEM tables use scalar subqueries to find the
+SQL> -- proper foreign key values by querying the RENTAL table primary keys.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert 5 records in the RENTAL table.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO rental VALUES
+  2  ( rental_s1.nextval
+  3  ,(SELECT	contact_id
+  4    FROM	contact
+  5    WHERE	last_name = 'Vizquel'
+  6    AND	first_name = 'Oscar')
+  7  , TRUNC(SYSDATE), TRUNC(SYSDATE) + 5
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental VALUES
+  2  ( rental_s1.nextval
+  3  ,(SELECT	contact_id
+  4    FROM	contact
+  5    WHERE	last_name = 'Vizquel'
+  6    AND	first_name = 'Doreen')
+  7  , TRUNC(SYSDATE), TRUNC(SYSDATE) + 5
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental VALUES
+  2  ( rental_s1.nextval
+  3  ,(SELECT	contact_id
+  4    FROM	contact
+  5    WHERE	last_name = 'Sweeney'
+  6    AND	first_name = 'Meaghan')
+  7  , TRUNC(SYSDATE), TRUNC(SYSDATE) + 5
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental VALUES
+  2  ( rental_s1.nextval
+  3  ,(SELECT	contact_id
+  4    FROM	contact
+  5    WHERE	last_name = 'Sweeney'
+  6    AND	first_name = 'Ian')
+  7  , TRUNC(SYSDATE), TRUNC(SYSDATE) + 5
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental VALUES
+  2  ( rental_s1.nextval
+  3  ,(SELECT	contact_id
+  4    FROM	contact
+  5    WHERE	last_name = 'Winn'
+  6    AND	first_name = 'Brian')
+  7  , TRUNC(SYSDATE), TRUNC(SYSDATE) + 5
+  8  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Insert 9 records in the RENTAL_ITEM table.
+SQL> -- ------------------------------------------------------------------
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Vizquel'
+ 16    AND	c.first_name = 'Oscar')
+ 17  ,(SELECT	i.item_id
+ 18    FROM	item i
+ 19    ,	common_lookup cl
+ 20    WHERE	i.item_title = 'Star Wars I'
+ 21    AND	i.item_subtitle = 'Phantom Menace'
+ 22    AND	i.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'DVD_WIDE_SCREEN')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r inner join contact c
+ 13    ON	r.customer_id = c.contact_id
+ 14    WHERE	c.last_name = 'Vizquel'
+ 15    AND	c.first_name = 'Oscar')
+ 16  ,(SELECT	d.item_id
+ 17    FROM	item d join common_lookup cl
+ 18    ON	d.item_title = 'Star Wars II'
+ 19    WHERE	d.item_subtitle = 'Attack of the Clones'
+ 20    AND	d.item_type = cl.common_lookup_id
+ 21    AND	cl.common_lookup_type = 'DVD_WIDE_SCREEN')
+ 22  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Vizquel'
+ 16    AND	c.first_name = 'Oscar')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'Star Wars III'
+ 21    AND	d.item_subtitle = 'Revenge of the Sith'
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'DVD_WIDE_SCREEN')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Vizquel'
+ 16    AND	c.first_name = 'Doreen')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'I Remember Mama'
+ 21    AND	d.item_subtitle IS NULL
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'BLU-RAY')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Vizquel'
+ 16    AND	c.first_name = 'Doreen')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'Camelot'
+ 21    AND	d.item_subtitle IS NULL
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'BLU-RAY')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Sweeney'
+ 16    AND	c.first_name = 'Meaghan')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'Hook'
+ 21    AND	d.item_subtitle IS NULL
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'BLU-RAY')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Sweeney'
+ 16    AND	c.first_name = 'Ian')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'Cars'
+ 21    AND	d.item_subtitle IS NULL
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'XBOX')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Winn'
+ 16    AND	c.first_name = 'Brian')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'RoboCop'
+ 21    AND	d.item_subtitle IS NULL
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'XBOX')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO rental_item
+  2  ( rental_item_id
+  3  , rental_id
+  4  , item_id
+  5  , created_by
+  6  , creation_date
+  7  , last_updated_by
+  8  , last_update_date)
+  9  VALUES
+ 10  ( rental_item_s1.nextval
+ 11  ,(SELECT	r.rental_id
+ 12    FROM	rental r
+ 13    ,	contact c
+ 14    WHERE	r.customer_id = c.contact_id
+ 15    AND	c.last_name = 'Winn'
+ 16    AND	c.first_name = 'Brian')
+ 17  ,(SELECT	d.item_id
+ 18    FROM	item d
+ 19    ,	common_lookup cl
+ 20    WHERE	d.item_title = 'The Hunt for Red October'
+ 21    AND	d.item_subtitle = 'Special Collector''s Edition'
+ 22    AND	d.item_type = cl.common_lookup_id
+ 23    AND	cl.common_lookup_type = 'DVD_WIDE_SCREEN')
+ 24  , 3, SYSDATE, 3, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- These steps modify the MEMBER table created during Lab #2, by adding
+SQL> -- a MEMBER_TYPE column and seeding an appropriate group or individual
+SQL> -- account on the basis of how many contacts belong to a member.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Update all MEMBER_TYPE values based on number of dependent CONTACT rows.
+SQL> UPDATE member m
+  2  SET    member_type = (SELECT   common_lookup_id
+  3  			   FROM     common_lookup
+  4  			   WHERE    common_lookup_context = 'MEMBER'
+  5  			   AND	    common_lookup_type =
+  6  				     (SELECT  dt.member_type
+  7  				      FROM   (SELECT   c.member_id
+  8  					      ,        CASE
+  9  							 WHEN COUNT(c.member_id) > 1 THEN
+ 10  							  'GROUP'
+ 11  							 ELSE
+ 12  							  'INDIVIDUAL'
+ 13  						       END AS member_type
+ 14  					      FROM     contact c
+ 15  					      GROUP BY c.member_id) dt
+ 16  				      WHERE   dt.member_id = m.member_id));
+
+3 rows updated.
+
+SQL> 
+SQL> -- Modify the MEMBER table to add a NOT NULL constraint to the MEMBER_TYPE column.
+SQL> ALTER TABLE member
+  2  ADD CONSTRAINT nn_member_1 CHECK(member_type IS NOT NULL);
+
+Table altered.
+
+SQL> 
+SQL> -- Use SQL*Plus report formatting commands.
+SQL> COLUMN member_id	       FORMAT 999999 HEADING "MEMBER|ID"
+SQL> COLUMN members	       FORMAT 999999 HEADING "MEMBER|QTY #"
+SQL> COLUMN member_type        FORMAT 999999 HEADING "MEMBER|TYPE|ID #"
+SQL> COLUMN common_lookup_id   FORMAT 999999 HEADING "MEMBER|LOOKUP|ID #"
+SQL> COLUMN common_lookup_type FORMAT A12    HEADING "COMMON|LOOKUP|TYPE"
+SQL> 
+SQL> -- Verify MEMBER_TYPE values, confirms preceding UPDATE statement.
+SQL> SELECT   m.member_id
+  2  ,	      COUNT(contact_id) AS MEMBERS
+  3  ,	      m.member_type
+  4  ,	      cl.common_lookup_id
+  5  ,	      cl.common_lookup_type
+  6  FROM     member m INNER JOIN contact c
+  7  ON       m.member_id = c.member_id INNER JOIN common_lookup cl
+  8  ON       m.member_type = cl.common_lookup_id
+  9  GROUP BY m.member_id
+ 10  ,	      m.member_type
+ 11  ,	      cl.common_lookup_id
+ 12  ,	      cl.common_lookup_type
+ 13  ORDER BY m.member_id;
+
+                 MEMBER  MEMBER COMMON                                          
+ MEMBER  MEMBER    TYPE  LOOKUP LOOKUP                                          
+     ID   QTY #    ID #    ID # TYPE                                            
+------- ------- ------- ------- ------------                                    
+   1001       2    1004    1004 GROUP                                           
+   1002       2    1004    1004 GROUP                                           
+   1003       3    1004    1004 GROUP                                           
+
+3 rows selected.
+
+SQL> 
+SQL> -- Transaction Management Example.
+SQL> CREATE OR REPLACE PROCEDURE contact_insert
+  2  ( pv_member_type	      VARCHAR2
+  3  , pv_account_number      VARCHAR2
+  4  , pv_credit_card_number  VARCHAR2
+  5  , pv_credit_card_type    VARCHAR2
+  6  , pv_first_name	      VARCHAR2
+  7  , pv_middle_name	      VARCHAR2 := ''
+  8  , pv_last_name	      VARCHAR2
+  9  , pv_contact_type	      VARCHAR2
+ 10  , pv_address_type	      VARCHAR2
+ 11  , pv_city		      VARCHAR2
+ 12  , pv_state_province      VARCHAR2
+ 13  , pv_postal_code	      VARCHAR2
+ 14  , pv_street_address      VARCHAR2
+ 15  , pv_telephone_type      VARCHAR2
+ 16  , pv_country_code	      VARCHAR2
+ 17  , pv_area_code	      VARCHAR2
+ 18  , pv_telephone_number    VARCHAR2
+ 19  , pv_created_by	      NUMBER   := 1
+ 20  , pv_creation_date       DATE     := SYSDATE
+ 21  , pv_last_updated_by     NUMBER   := 1
+ 22  , pv_last_update_date    DATE     := SYSDATE) IS
+ 23  
+ 24    -- Local variables, to leverage subquery assignments in INSERT statements.
+ 25    lv_address_type	      VARCHAR2(30);
+ 26    lv_contact_type	      VARCHAR2(30);
+ 27    lv_credit_card_type    VARCHAR2(30);
+ 28    lv_member_type	      VARCHAR2(30);
+ 29    lv_telephone_type      VARCHAR2(30);
+ 30  
+ 31  BEGIN
+ 32    -- Assign parameter values to local variables for nested assignments to DML subqueries.
+ 33    lv_address_type := pv_address_type;
+ 34    lv_contact_type := pv_contact_type;
+ 35    lv_credit_card_type := pv_credit_card_type;
+ 36    lv_member_type := pv_member_type;
+ 37    lv_telephone_type := pv_telephone_type;
+ 38  
+ 39    -- Create a SAVEPOINT as a starting point.
+ 40    SAVEPOINT starting_point;
+ 41  
+ 42    INSERT INTO member
+ 43    ( member_id
+ 44    , member_type
+ 45    , account_number
+ 46    , credit_card_number
+ 47    , credit_card_type
+ 48    , created_by
+ 49    , creation_date
+ 50    , last_updated_by
+ 51    , last_update_date )
+ 52    VALUES
+ 53    ( member_s1.NEXTVAL
+ 54    ,(SELECT   common_lookup_id
+ 55  	 FROM	  common_lookup
+ 56  	 WHERE	  common_lookup_context = 'MEMBER'
+ 57  	 AND	  common_lookup_type = lv_member_type)
+ 58    , pv_account_number
+ 59    , pv_credit_card_number
+ 60    ,(SELECT   common_lookup_id
+ 61  	 FROM	  common_lookup
+ 62  	 WHERE	  common_lookup_context = 'MEMBER'
+ 63  	 AND	  common_lookup_type = lv_credit_card_type)
+ 64    , pv_created_by
+ 65    , pv_creation_date
+ 66    , pv_last_updated_by
+ 67    , pv_last_update_date );
+ 68  
+ 69    INSERT INTO contact
+ 70    VALUES
+ 71    ( contact_s1.NEXTVAL
+ 72    , member_s1.CURRVAL
+ 73    ,(SELECT   common_lookup_id
+ 74  	 FROM	  common_lookup
+ 75  	 WHERE	  common_lookup_context = 'CONTACT'
+ 76  	 AND	  common_lookup_type = lv_contact_type)
+ 77    , pv_first_name
+ 78    , pv_middle_name
+ 79    , pv_last_name
+ 80    , pv_created_by
+ 81    , pv_creation_date
+ 82    , pv_last_updated_by
+ 83    , pv_last_update_date );
+ 84  
+ 85    INSERT INTO address
+ 86    VALUES
+ 87    ( address_s1.NEXTVAL
+ 88    , contact_s1.CURRVAL
+ 89    ,(SELECT   common_lookup_id
+ 90  	 FROM	  common_lookup
+ 91  	 WHERE	  common_lookup_context = 'MULTIPLE'
+ 92  	 AND	  common_lookup_type = lv_address_type)
+ 93    , pv_city
+ 94    , pv_state_province
+ 95    , pv_postal_code
+ 96    , pv_created_by
+ 97    , pv_creation_date
+ 98    , pv_last_updated_by
+ 99    , pv_last_update_date );
+100  
+101    INSERT INTO street_address
+102    VALUES
+103    ( street_address_s1.NEXTVAL
+104    , address_s1.CURRVAL
+105    , pv_street_address
+106    , pv_created_by
+107    , pv_creation_date
+108    , pv_last_updated_by
+109    , pv_last_update_date );
+110    dbms_output.put_line('c5');
+111    INSERT INTO telephone
+112    VALUES
+113    ( telephone_s1.NEXTVAL				   -- TELEPHONE_ID
+114    , contact_s1.CURRVAL				   -- CONTACT_ID
+115    , address_s1.CURRVAL				   -- ADDRESS_ID
+116    ,(SELECT   common_lookup_id			   -- ADDRESS_TYPE
+117  	 FROM	  common_lookup
+118  	 WHERE	  common_lookup_context = 'MULTIPLE'
+119  	 AND	  common_lookup_type = lv_telephone_type)
+120    , pv_country_code				   -- COUNTRY_CODE
+121    , pv_area_code					   -- AREA_CODE
+122    , pv_telephone_number				   -- TELEPHONE_NUMBER
+123    , pv_created_by					   -- CREATED_BY
+124    , pv_creation_date				   -- CREATION_DATE
+125    , pv_last_updated_by				   -- LAST_UPDATED_BY
+126    , pv_last_update_date);				   -- LAST_UPDATE_DATE
+127  
+128    COMMIT;
+129  EXCEPTION
+130    WHEN OTHERS THEN
+131  	 ROLLBACK TO starting_point;
+132  	 RETURN;
+133  END contact_insert;
+134  /
+
+Procedure created.
+
+SQL> 
+SQL> -- Display any compilation errors.
+SQL> SHOW ERRORS
+No errors.
+SQL> 
+SQL> -- Insert complete contact information using stored procedure.
+SQL> EXECUTE contact_insert('INDIVIDUAL','R11-514-34','1111-1111-1111-1111','VISA_CARD','Goeffrey','Ward','Clinton','CUSTOMER','HOME','Provo','Utah','84606','118 South 9th East','HOME','011','801','423-1234');
+c5                                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> EXECUTE contact_insert('INDIVIDUAL','R11-514-35','1111-2222-1111-1111','VISA_CARD','Wendy','','Moss','CUSTOMER','HOME','Provo','Utah','84606','1218 South 10th East','HOME','011','801','423-1234');
+c5                                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> EXECUTE contact_insert('INDIVIDUAL','R11-514-36','1111-1111-2222-1111','VISA_CARD','Simon','Jonah','Gretelz','CUSTOMER','HOME','Provo','Utah','84606','2118 South 7th East','HOME','011','801','423-1234');
+c5                                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> EXECUTE contact_insert('INDIVIDUAL','R11-514-37','1111-1111-1111-2222','MASTER_CARD','Elizabeth','Jane','Royal','CUSTOMER','HOME','Provo','Utah','84606','2228 South 14th East','HOME','011','801','423-1234');
+c5                                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> EXECUTE contact_insert('INDIVIDUAL','R11-514-38','1111-1111-3333-1111','VISA_CARD','Brian','Nathan','Smith','CUSTOMER','HOME','Spanish Fork','Utah','84606','333 North 2nd East','HOME','011','801','423-1234');
+c5                                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Verify MEMBER_TYPE values.
+SQL> SELECT   m.member_id
+  2  ,	      COUNT(contact_id) AS MEMBERS
+  3  ,	      m.member_type
+  4  ,	      cl.common_lookup_id
+  5  ,	      cl.common_lookup_type
+  6  FROM     member m INNER JOIN contact c
+  7  ON       m.member_id = c.member_id INNER JOIN common_lookup cl
+  8  ON       m.member_type = cl.common_lookup_id
+  9  GROUP BY m.member_id
+ 10  ,	      m.member_type
+ 11  ,	      cl.common_lookup_id
+ 12  ,	      cl.common_lookup_type
+ 13  ORDER BY m.member_id;
+
+                 MEMBER  MEMBER COMMON                                          
+ MEMBER  MEMBER    TYPE  LOOKUP LOOKUP                                          
+     ID   QTY #    ID #    ID # TYPE                                            
+------- ------- ------- ------- ------------                                    
+   1001       2    1004    1004 GROUP                                           
+   1002       2    1004    1004 GROUP                                           
+   1003       3    1004    1004 GROUP                                           
+   1004       1    1003    1003 INDIVIDUAL                                      
+   1005       1    1003    1003 INDIVIDUAL                                      
+   1006       1    1003    1003 INDIVIDUAL                                      
+   1007       1    1003    1003 INDIVIDUAL                                      
+   1008       1    1003    1003 INDIVIDUAL                                      
+
+8 rows selected.
+
+SQL> 
+SQL> -- Create a transaction view.
+SQL> CREATE OR REPLACE VIEW current_rental AS
+  2    SELECT	m.account_number
+  3    ,	c.first_name
+  4    ||	DECODE(c.middle_name,NULL,' ',' '||c.middle_name||' ')
+  5    ||	c.last_name FULL_NAME
+  6    ,	i.item_title TITLE
+  7    ,	i.item_subtitle SUBTITLE
+  8    ,	SUBSTR(cl.common_lookup_meaning,1,3) PRODUCT
+  9    ,	r.check_out_date
+ 10    ,	r.return_date
+ 11    FROM	common_lookup cl
+ 12    ,	contact c
+ 13    ,	item i
+ 14    ,	member m
+ 15    ,	rental r
+ 16    ,	rental_item ri
+ 17    WHERE	r.customer_id = c.contact_id
+ 18    AND	r.rental_id = ri.rental_id
+ 19    AND	ri.item_id = i.item_id
+ 20    AND	i.item_type = cl.common_lookup_id
+ 21    AND	c.member_id = m.member_id
+ 22    ORDER BY 1,2,3;
+
+View created.
+
+SQL> 
+SQL> COL full_name FORMAT A16
+SQL> COL title	   FORMAT A30
+SQL> COL subtitle  FORMAT A4
+SQL> 
+SQL> SELECT   cr.full_name
+  2  ,	      cr.title
+  3  ,	      cr.product
+  4  ,	      cr.check_out_date
+  5  ,	      cr.return_date
+  6  FROM     current_rental cr;
+
+FULL_NAME        TITLE                          PRODUCT      CHECK_OUT_DATE     
+---------------- ------------------------------ ------------ ------------------ 
+RETURN_DATE                                                                     
+------------------                                                              
+Brian Winn       RoboCop                        XBO          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Brian Winn       The Hunt for Red October       DVD          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Doreen Vizquel   Camelot                        Blu          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Doreen Vizquel   I Remember Mama                Blu          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Oscar Vizquel    Star Wars I                    DVD          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Oscar Vizquel    Star Wars II                   DVD          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Oscar Vizquel    Star Wars III                  DVD          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Ian M Sweeney    Cars                           XBO          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+Meaghan Sweeney  Hook                           Blu          23-SEP-17          
+28-SEP-17                                                                       
+                                                                                
+
+9 rows selected.
+
+SQL> 
+SQL> SPOOL OFF

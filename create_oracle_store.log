@@ -1,0 +1,632 @@
+SQL> SET FEEDBACK ON
+SQL> SET NULL '<Null>'
+SQL> SET PAGESIZE 999
+SQL> SET SERVEROUTPUT ON
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create SYSTEM_USER table and sequence and seed data.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'SYSTEM_USER') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE system_user CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'SYSTEM_USER_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE system_user_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE system_user
+  2  ( system_user_id		   NUMBER
+  3  , system_user_name 	   VARCHAR2(20) CONSTRAINT nn_system_user_1 NOT NULL
+  4  , system_user_group_id	   NUMBER	CONSTRAINT nn_system_user_2 NOT NULL
+  5  , system_user_type 	   NUMBER	CONSTRAINT nn_system_user_3 NOT NULL
+  6  , first_name		   VARCHAR2(20)
+  7  , middle_name		   VARCHAR2(20)
+  8  , last_name		   VARCHAR2(20)
+  9  , created_by		   NUMBER	CONSTRAINT nn_system_user_4 NOT NULL
+ 10  , creation_date		   DATE 	CONSTRAINT nn_system_user_5 NOT NULL
+ 11  , last_updated_by		   NUMBER	CONSTRAINT nn_system_user_6 NOT NULL
+ 12  , last_update_date 	   DATE 	CONSTRAINT nn_system_user_7 NOT NULL
+ 13  , CONSTRAINT pk_system_user_1 PRIMARY KEY(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create sequence.
+SQL> CREATE SEQUENCE system_user_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- Seed initial record in the SYSTEM_USER table.
+SQL> INSERT INTO system_user
+  2  ( system_user_id
+  3  , system_user_name
+  4  , system_user_group_id
+  5  , system_user_type
+  6  , created_by
+  7  , creation_date
+  8  , last_updated_by
+  9  , last_update_date)
+ 10  VALUES
+ 11  ( 1,'SYSADMIN', 1, 1, 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Alter SYSTEM_USER table to include self-referencing foreign key constraints.
+SQL> -- ------------------------------------------------------------------
+SQL> ALTER TABLE system_user
+  2  ADD CONSTRAINT fk_system_user_1 FOREIGN KEY(created_by) REFERENCES system_user(system_user_id);
+
+Table altered.
+
+SQL> 
+SQL> ALTER TABLE system_user
+  2  ADD CONSTRAINT fk_system_user_2 FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id);
+
+Table altered.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create COMMON_LOOKUP table and sequence and seed data.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'COMMON_LOOKUP') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE common_lookup CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'COMMON_LOOKUP_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE common_lookup_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE common_lookup
+  2  ( common_lookup_id 	   NUMBER
+  3  , common_lookup_context	   VARCHAR2(30) CONSTRAINT nn_clookup_1 NOT NULL
+  4  , common_lookup_type	   VARCHAR2(30) CONSTRAINT nn_clookup_2 NOT NULL
+  5  , common_lookup_meaning	   VARCHAR2(30) CONSTRAINT nn_clookup_3 NOT NULL
+  6  , created_by		   NUMBER	CONSTRAINT nn_clookup_4 NOT NULL
+  7  , creation_date		   DATE 	CONSTRAINT nn_clookup_5 NOT NULL
+  8  , last_updated_by		   NUMBER	CONSTRAINT nn_clookup_6 NOT NULL
+  9  , last_update_date 	   DATE 	CONSTRAINT nn_clookup_7 NOT NULL
+ 10  , CONSTRAINT pk_c_lookup_1    PRIMARY KEY(common_lookup_id)
+ 11  , CONSTRAINT fk_c_lookup_1    FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 12  , CONSTRAINT fk_c_lookup_2    FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a non-unique index.
+SQL> CREATE INDEX common_lookup_n1
+  2    ON common_lookup(common_lookup_context);
+
+Index created.
+
+SQL> 
+SQL> -- Create a unique index.
+SQL> CREATE UNIQUE INDEX common_lookup_u2
+  2    ON common_lookup(common_lookup_context,common_lookup_type);
+
+Index created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE common_lookup_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- Seed the COMMON_LOOKUP table with 18 records.
+SQL> INSERT INTO common_lookup VALUES
+  2  ( 1,'SYSTEM_USER','SYSTEM_ADMIN','System Administrator', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( 2,'SYSTEM_USER','DBA','Database Administrator', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'CONTACT','EMPLOYEE','Employee', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'CONTACT','CUSTOMER','Customer', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MEMBER','INDIVIDUAL','Individual Membership', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MEMBER','GROUP','Group Membership', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MEMBER','DISCOVER_CARD','Discover Card', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MEMBER','MASTER_CARD','Master Card', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MEMBER','VISA_CARD','VISA Card', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MULTIPLE','HOME','Home', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'MULTIPLE','WORK','Work', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','DVD_FULL_SCREEN','DVD: Full Screen', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','DVD_WIDE_SCREEN','DVD: Wide Screen', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','NINTENDO_GAMECUBE','Nintendo GameCube', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','PLAYSTATION2','PlayStation2', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','XBOX','XBOX', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO common_lookup VALUES
+  2  ( common_lookup_s1.nextval,'ITEM','BLU-RAY','Blu-ray', 1, SYSDATE, 1, SYSDATE);
+
+1 row created.
+
+SQL> 
+SQL> -- Add a constraint to the SYSTEM_USER table dependent on the COMMON_LOOKUP table.
+SQL> ALTER TABLE system_user
+  2  ADD CONSTRAINT fk_system_user_3 FOREIGN KEY(system_user_type)
+  3  	 REFERENCES common_lookup(common_lookup_id);
+
+Table altered.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create MEMBER table and sequence and seed data.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'MEMBER') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE member CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'MEMBER_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE member_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE member
+  2  ( member_id		   NUMBER
+  3  , member_type		   NUMBER
+  4  , account_number		   VARCHAR2(10) CONSTRAINT nn_member_2 NOT NULL
+  5  , credit_card_number	   VARCHAR2(19) CONSTRAINT nn_member_3 NOT NULL
+  6  , credit_card_type 	   NUMBER	CONSTRAINT nn_member_4 NOT NULL
+  7  , created_by		   NUMBER	CONSTRAINT nn_member_5 NOT NULL
+  8  , creation_date		   DATE 	CONSTRAINT nn_member_6 NOT NULL
+  9  , last_updated_by		   NUMBER	CONSTRAINT nn_member_7 NOT NULL
+ 10  , last_update_date 	   DATE 	CONSTRAINT nn_member_8 NOT NULL
+ 11  , CONSTRAINT pk_member_1	   PRIMARY KEY(member_id)
+ 12  , CONSTRAINT fk_member_1	   FOREIGN KEY(member_type) REFERENCES common_lookup(common_lookup_id)
+ 13  , CONSTRAINT fk_member_2	   FOREIGN KEY(credit_card_type) REFERENCES common_lookup(common_lookup_id)
+ 14  , CONSTRAINT fk_member_3	   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 15  , CONSTRAINT fk_member_4	   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a non-unique index.
+SQL> CREATE INDEX member_n1 ON member(credit_card_type);
+
+Index created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE member_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create CONTACT table and sequence and seed data.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop objects.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'CONTACT') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE contact CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'CONTACT_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE contact_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE contact
+  2  ( contact_id		   NUMBER
+  3  , member_id		   NUMBER	CONSTRAINT nn_contact_1 NOT NULL
+  4  , contact_type		   NUMBER	CONSTRAINT nn_contact_2 NOT NULL
+  5  , first_name		   VARCHAR2(20) CONSTRAINT nn_contact_3 NOT NULL
+  6  , middle_name		   VARCHAR2(20)
+  7  , last_name		   VARCHAR2(20) CONSTRAINT nn_contact_4 NOT NULL
+  8  , created_by		   NUMBER	CONSTRAINT nn_contact_5 NOT NULL
+  9  , creation_date		   DATE 	CONSTRAINT nn_contact_6 NOT NULL
+ 10  , last_updated_by		   NUMBER	CONSTRAINT nn_contact_7 NOT NULL
+ 11  , last_update_date 	   DATE 	CONSTRAINT nn_contact_8 NOT NULL
+ 12  , CONSTRAINT pk_contact_1	   PRIMARY KEY(contact_id)
+ 13  , CONSTRAINT fk_contact_1	   FOREIGN KEY(member_id) REFERENCES member(member_id)
+ 14  , CONSTRAINT fk_contact_2	   FOREIGN KEY(contact_type) REFERENCES common_lookup(common_lookup_id)
+ 15  , CONSTRAINT fk_contact_3	   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 16  , CONSTRAINT fk_contact_4	   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create non-unique index.
+SQL> CREATE INDEX contact_n1 ON contact(member_id);
+
+Index created.
+
+SQL> CREATE INDEX contact_n2 ON contact(contact_type);
+
+Index created.
+
+SQL> 
+SQL> -- Create sequence.
+SQL> CREATE SEQUENCE contact_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create ADDRESS table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop objects.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'ADDRESS') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE address CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'ADDRESS_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE address_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE address
+  2  ( address_id		   NUMBER
+  3  , contact_id		   NUMBER	CONSTRAINT nn_address_1 NOT NULL
+  4  , address_type		   NUMBER	CONSTRAINT nn_address_2 NOT NULL
+  5  , city			   VARCHAR2(30) CONSTRAINT nn_address_3 NOT NULL
+  6  , state_province		   VARCHAR2(30) CONSTRAINT nn_address_4 NOT NULL
+  7  , postal_code		   VARCHAR2(20) CONSTRAINT nn_address_5 NOT NULL
+  8  , created_by		   NUMBER	CONSTRAINT nn_address_6 NOT NULL
+  9  , creation_date		   DATE 	CONSTRAINT nn_address_7 NOT NULL
+ 10  , last_updated_by		   NUMBER	CONSTRAINT nn_address_8 NOT NULL
+ 11  , last_update_date 	   DATE 	CONSTRAINT nn_address_9 NOT NULL
+ 12  , CONSTRAINT pk_address_1	   PRIMARY KEY(address_id)
+ 13  , CONSTRAINT fk_address_1	   FOREIGN KEY(contact_id) REFERENCES contact(contact_id)
+ 14  , CONSTRAINT fk_address_2	   FOREIGN KEY(address_type) REFERENCES common_lookup(common_lookup_id)
+ 15  , CONSTRAINT fk_address_3	   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 16  , CONSTRAINT fk_address_4	   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a non-unique index.
+SQL> CREATE INDEX address_n1 ON address(contact_id);
+
+Index created.
+
+SQL> CREATE INDEX address_n2 ON address(address_type);
+
+Index created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE address_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create STREET_ADDRESS table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'STREET_ADDRESS') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE street_address CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'STREET_ADDRESS_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE street_address_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE street_address
+  2  ( street_address_id	   NUMBER
+  3  , address_id		   NUMBER	CONSTRAINT nn_saddress_1 NOT NULL
+  4  , street_address		   VARCHAR2(30) CONSTRAINT nn_saddress_2 NOT NULL
+  5  , created_by		   NUMBER	CONSTRAINT nn_saddress_3 NOT NULL
+  6  , creation_date		   DATE 	CONSTRAINT nn_saddress_4 NOT NULL
+  7  , last_updated_by		   NUMBER	CONSTRAINT nn_saddress_5 NOT NULL
+  8  , last_update_date 	   DATE 	CONSTRAINT nn_saddress_6 NOT NULL
+  9  , CONSTRAINT pk_s_address_1   PRIMARY KEY(street_address_id)
+ 10  , CONSTRAINT fk_s_address_1   FOREIGN KEY(address_id) REFERENCES address(address_id)
+ 11  , CONSTRAINT fk_s_address_3   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 12  , CONSTRAINT fk_s_address_4   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create sequence.
+SQL> CREATE SEQUENCE street_address_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create TELEPHONE table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'TELEPHONE') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE telephone CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'TELEPHONE_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE telephone_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE telephone
+  2  ( telephone_id		   NUMBER
+  3  , contact_id		   NUMBER	CONSTRAINT nn_telephone_1 NOT NULL
+  4  , address_id		   NUMBER
+  5  , telephone_type		   NUMBER	CONSTRAINT nn_telephone_2 NOT NULL
+  6  , country_code		   VARCHAR2(3)	CONSTRAINT nn_telephone_3 NOT NULL
+  7  , area_code		   VARCHAR2(6)	CONSTRAINT nn_telephone_4 NOT NULL
+  8  , telephone_number 	   VARCHAR2(10) CONSTRAINT nn_telephone_5 NOT NULL
+  9  , created_by		   NUMBER	CONSTRAINT nn_telephone_6 NOT NULL
+ 10  , creation_date		   DATE 	CONSTRAINT nn_telephone_7 NOT NULL
+ 11  , last_updated_by		   NUMBER	CONSTRAINT nn_telephone_8 NOT NULL
+ 12  , last_update_date 	   DATE 	CONSTRAINT nn_telephone_9 NOT NULL
+ 13  , CONSTRAINT pk_telephone_1   PRIMARY KEY(telephone_id)
+ 14  , CONSTRAINT fk_telephone_1   FOREIGN KEY(contact_id) REFERENCES contact(contact_id)
+ 15  , CONSTRAINT fk_telephone_2   FOREIGN KEY(telephone_type) REFERENCES common_lookup(common_lookup_id)
+ 16  , CONSTRAINT fk_telephone_3   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 17  , CONSTRAINT fk_telephone_4   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create non-unique indexes.
+SQL> CREATE INDEX telephone_n1 ON telephone(contact_id,address_id);
+
+Index created.
+
+SQL> CREATE INDEX telephone_n2 ON telephone(address_id);
+
+Index created.
+
+SQL> CREATE INDEX telephone_n3 ON telephone(telephone_type);
+
+Index created.
+
+SQL> 
+SQL> -- Create sequence.
+SQL> CREATE SEQUENCE telephone_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create RENTAL table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'RENTAL') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE rental CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'RENTAL_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE rental_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE rental
+  2  ( rental_id		   NUMBER
+  3  , customer_id		   NUMBER CONSTRAINT nn_rental_1 NOT NULL
+  4  , check_out_date		   DATE   CONSTRAINT nn_rental_2 NOT NULL
+  5  , return_date		   DATE   CONSTRAINT nn_rental_3 NOT NULL
+  6  , created_by		   NUMBER CONSTRAINT nn_rental_4 NOT NULL
+  7  , creation_date		   DATE   CONSTRAINT nn_rental_5 NOT NULL
+  8  , last_updated_by		   NUMBER CONSTRAINT nn_rental_6 NOT NULL
+  9  , last_update_date 	   DATE   CONSTRAINT nn_rental_7 NOT NULL
+ 10  , CONSTRAINT pk_rental_1	   PRIMARY KEY(rental_id)
+ 11  , CONSTRAINT fk_rental_1	   FOREIGN KEY(customer_id) REFERENCES contact(contact_id)
+ 12  , CONSTRAINT fk_rental_2	   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 13  , CONSTRAINT fk_rental_3	   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE rental_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create ITEM table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop objects.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'ITEM') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE item CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'ITEM_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE item_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create a table.
+SQL> CREATE TABLE item
+  2  ( item_id			   NUMBER
+  3  , item_barcode		   VARCHAR2(14) CONSTRAINT nn_item_1 NOT NULL
+  4  , item_type		   NUMBER	CONSTRAINT nn_item_2 NOT NULL
+  5  , item_title		   VARCHAR2(60) CONSTRAINT nn_item_3 NOT NULL
+  6  , item_subtitle		   VARCHAR2(60)
+  7  , item_rating		   VARCHAR2(8)	CONSTRAINT nn_item_4 NOT NULL
+  8  , item_release_date	   DATE 	CONSTRAINT nn_item_5 NOT NULL
+  9  , created_by		   NUMBER	CONSTRAINT nn_item_6 NOT NULL
+ 10  , creation_date		   DATE 	CONSTRAINT nn_item_7 NOT NULL
+ 11  , last_updated_by		   NUMBER	CONSTRAINT nn_item_8 NOT NULL
+ 12  , last_update_date 	   DATE 	CONSTRAINT nn_item_9 NOT NULL
+ 13  , CONSTRAINT pk_item_1	   PRIMARY KEY(item_id)
+ 14  , CONSTRAINT fk_item_1	   FOREIGN KEY(item_type) REFERENCES common_lookup(common_lookup_id)
+ 15  , CONSTRAINT fk_item_2	   FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 16  , CONSTRAINT fk_item_3	   FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE item_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- ------------------------------------------------------------------
+SQL> -- Create RENTAL_ITEM table and sequence.
+SQL> -- ------------------------------------------------------------------
+SQL> -- Conditionally drop table and sequence.
+SQL> BEGIN
+  2    FOR i IN (SELECT null FROM user_tables WHERE table_name = 'RENTAL_ITEM') LOOP
+  3  	 EXECUTE IMMEDIATE 'DROP TABLE rental_item CASCADE CONSTRAINTS';
+  4    END LOOP;
+  5    FOR i IN (SELECT null FROM user_sequences WHERE sequence_name = 'RENTAL_ITEM_S1') LOOP
+  6  	 EXECUTE IMMEDIATE 'DROP SEQUENCE rental_item_s1';
+  7    END LOOP;
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> 
+SQL> -- Create table.
+SQL> CREATE TABLE rental_item
+  2  ( rental_item_id		   NUMBER
+  3  , rental_id		   NUMBER CONSTRAINT nn_rental_item_1 NOT NULL
+  4  , item_id			   NUMBER CONSTRAINT nn_rental_item_2 NOT NULL
+  5  , created_by		   NUMBER CONSTRAINT nn_rental_item_3 NOT NULL
+  6  , creation_date		   DATE   CONSTRAINT nn_rental_item_4 NOT NULL
+  7  , last_updated_by		   NUMBER CONSTRAINT nn_rental_item_5 NOT NULL
+  8  , last_update_date 	   DATE   CONSTRAINT nn_rental_item_6 NOT NULL
+  9  , CONSTRAINT pk_rental_item_1 PRIMARY KEY(rental_item_id)
+ 10  , CONSTRAINT fk_rental_item_1 FOREIGN KEY(rental_id) REFERENCES rental(rental_id)
+ 11  , CONSTRAINT fk_rental_item_2 FOREIGN KEY(item_id) REFERENCES item(item_id)
+ 12  , CONSTRAINT fk_rental_item_3 FOREIGN KEY(created_by) REFERENCES system_user(system_user_id)
+ 13  , CONSTRAINT fk_rental_item_4 FOREIGN KEY(last_updated_by) REFERENCES system_user(system_user_id));
+
+Table created.
+
+SQL> 
+SQL> -- Create a sequence.
+SQL> CREATE SEQUENCE rental_item_s1 START WITH 1001;
+
+Sequence created.
+
+SQL> 
+SQL> -- Commit inserted records.
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> -- Close log file.
+SQL> SPOOL OFF

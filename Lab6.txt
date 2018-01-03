@@ -1,0 +1,250 @@
+SQL> 
+SQL> DECLARE
+  2  
+  3  /* Declare the local error handling variables. */
+  4    lv_local_object	VARCHAR2(30) := 'ANONYMOUS';
+  5    lv_local_module	VARCHAR2(30) := 'LOCAL';
+  6  
+  7  BEGIN
+  8    insert_item( pv_item_barcode => 'B01LTHWTHO'
+  9  		  , pv_item_type => 'DVD'
+ 10  		  , pv_item_title => 'Inferno'
+ 11  		  , pv_item_rating => 'PG-13'
+ 12  		  , pv_item_rating_agency => 'MPAA'
+ 13  		  , pv_item_release_date => '24-JAN-2017');
+ 14  EXCEPTION
+ 15    WHEN OTHERS THEN
+ 16  	 record_errors( object_name => lv_local_object
+ 17  		      , module_name => lv_local_module
+ 18  		      , sqlerror_code => 'ORA'||SQLCODE
+ 19  		      , sqlerror_message => SQLERRM
+ 20  		      , user_error_message => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+ 21  	 RAISE;
+ 22  END;
+ 23  /
+  insert_item( pv_item_barcode => 'B01LTHWTHO'
+  *
+ERROR at line 8:
+ORA-06550: line 8, column 3:
+PLS-00905: object STUDENT.INSERT_ITEM is invalid
+ORA-06550: line 8, column 3:
+PL/SQL: Statement ignored 
+
+
+SQL> 
+SQL> -- Query Results
+SQL> COL item_barcode FORMAT A10 HEADING "Item|Barcode"
+SQL> COL item_title   FORMAT A48 HEADING "Item Title"
+SQL> COL release_date FORMAT A12 HEADING "Item|Release|Date"
+SQL> SELECT   i.item_barcode
+  2  ,	      i.item_title
+  3  ,	      i.item_release_date AS release_date
+  4  FROM   item i
+  5  WHERE  REGEXP_LIKE(i.item_title,'^.*bourne.*$','i')
+  6  OR     REGEXP_LIKE(i.item_title,'^.*inferno.*$','i');
+
+                                                            Item                
+Item                                                        Release             
+Barcode    Item Title                                       Date                
+---------- ------------------------------------------------ ------------        
+B01IOHVPA8 Jason Bourne                                     06-DEC-16           
+B002ZHKZCO The Bourne Identity                              19-JAN-10           
+B0068FZ18C The Bourne Supremacy                             10-JAN-12           
+B00AIZK85E The Bourne Ultimatum                             11-DEC-12           
+B01AT251XY The Bourne Legacy                                05-APR-16           
+B01LTHWTHO Inferno                                          24-JAN-17           
+
+6 rows selected.
+
+SQL> 
+SQL> SPOOL OFF;
+SQL> 
+SQL> DECLARE
+  2  
+  3  /* Declare the local error handling variables. */
+  4    lv_local_object	VARCHAR2(30) := 'ANONYMOUS';
+  5    lv_local_module	VARCHAR2(30) := 'LOCAL';
+  6  
+  7  /* Create a collection. */
+  8    lv_items  ITEM_TAB :=
+  9  	 item_tab(
+ 10  	     item_obj( item_barcode => 'B0084IG7KC'
+ 11  		     , item_type => 'BLU-RAY'
+ 12  		     , item_title => 'The Hunger Games'
+ 13  		     , item_subtitle => NULL
+ 14  		     , item_rating => 'PG-13'
+ 15  		     , item_rating_agency => 'MPAA'
+ 16  		     , item_release_date => '18-AUG-2012')
+ 17  	   , item_obj( item_barcode => 'B008JFUS8M'
+ 18  		     , item_type => 'BLU-RAY'
+ 19  		     , item_title => 'The Hunger Games: Catching Fire'
+ 20  		     , item_subtitle => NULL
+ 21  		     , item_rating => 'PG-13'
+ 22  		     , item_rating_agency => 'MPAA'
+ 23  		     , item_release_date => '07-MAR-2014'));
+ 24  BEGIN
+ 25  /* Call a element processing procedure. */
+ 26    insert_items(lv_items);
+ 27  
+ 28  EXCEPTION
+ 29    WHEN OTHERS THEN
+ 30  	 record_errors( object_name => lv_local_object
+ 31  		      , module_name => lv_local_module
+ 32  		      , sqlerror_code => 'ORA'||SQLCODE
+ 33  		      , sqlerror_message => SQLERRM
+ 34  		      , user_error_message => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+ 35  	 RAISE;
+ 36  END;
+ 37  /
+  insert_items(lv_items);
+  *
+ERROR at line 26:
+ORA-06550: line 26, column 3:
+PLS-00905: object STUDENT.INSERT_ITEMS is invalid
+ORA-06550: line 26, column 3:
+PL/SQL: Statement ignored 
+
+
+SQL> 
+SQL> -- Query Results
+SQL> COL item_barcode FORMAT A10 HEADING "Item|Barcode"
+SQL> COL item_title   FORMAT A36 HEADING "Item Title"
+SQL> COL release_date FORMAT A12 HEADING "Item|Release|Date"
+SQL> SELECT   i.item_barcode
+  2  ,	      i.item_title
+  3  ,	      i.item_release_date AS release_date
+  4  FROM     item i
+  5  WHERE    REGEXP_LIKE(i.item_title,'^.*bourne.*$','i')
+  6  OR       REGEXP_LIKE(i.item_title,'^.*inferno.*$','i')
+  7  OR       REGEXP_LIKE(i.item_title,'^.*hunger.*$','i')
+  8  ORDER BY CASE
+  9  		WHEN REGEXP_LIKE(i.item_title,'^.*bourne.*$','i')  THEN 1
+ 10  		WHEN REGEXP_LIKE(i.item_title,'^.*hunger.*$','i')  THEN 2
+ 11  		WHEN REGEXP_LIKE(i.item_title,'^.*inferno.*$','i') THEN 3
+ 12  	      END
+ 13  ,	      i.item_release_date;
+
+                                                Item                            
+Item                                            Release                         
+Barcode    Item Title                           Date                            
+---------- ------------------------------------ ------------                    
+B002ZHKZCO The Bourne Identity                  19-JAN-10                       
+B0068FZ18C The Bourne Supremacy                 10-JAN-12                       
+B00AIZK85E The Bourne Ultimatum                 11-DEC-12                       
+B01AT251XY The Bourne Legacy                    05-APR-16                       
+B01IOHVPA8 Jason Bourne                         06-DEC-16                       
+B0084IG7KC The Hunger Games                     18-AUG-12                       
+B008JFUS8M The Hunger Games: Catching Fire      07-MAR-14                       
+B00PYLT4YI The Hunger Games: Mockingjay Part 1  06-MAR-15                       
+B01LTHWTHO Inferno                              24-JAN-17                       
+
+9 rows selected.
+
+SQL> 
+SQL> SPOOL OFF;
+SQL> 
+SQL> DECLARE
+  2  
+  3    /* Declare the local error handling variables. */
+  4    lv_local_object	VARCHAR2(30);
+  5    lv_local_module	VARCHAR2(30);
+  6  
+  7    /* Create a collection. */
+  8    lv_items  ITEM_TAB :=
+  9  	 item_tab(
+ 10  	     item_obj( item_barcode => 'B00PYLT4YI'
+ 11  		     , item_type => 'BLU-RAY'
+ 12  		     , item_title => 'The Hunger Games: Mockingjay Part 1'
+ 13  		     , item_subtitle => NULL
+ 14  		     , item_rating => 'PG-13'
+ 15  		     , item_rating_agency => 'MPAA'
+ 16  		     , item_release_date => '06-MAR-2015')
+ 17  	   , item_obj( item_barcode => 'B0189HKE5Q'
+ 18  		     , item_type => 'XBOX'
+ 19  		     , item_title => 'The Hunger Games: Mockingjay Part 2'
+ 20  		     , item_subtitle => NULL
+ 21  		     , item_rating => 'PG-13'
+ 22  		     , item_rating_agency => 'MPAA'
+ 23  		     , item_release_date => '22-MAR-2016'));
+ 24  BEGIN
+ 25  /* Call a element processing procedure. */
+ 26    insert_items(lv_items);
+ 27  
+ 28  EXCEPTION
+ 29    WHEN OTHERS THEN
+ 30  	 record_errors(object_name => lv_local_object
+ 31  		      ,module_name => lv_local_module
+ 32  		      , sqlerror_code => 'ORA'||SQLCODE
+ 33  		      ,sqlerror_message => SQLERRM
+ 34  		      ,user_error_message => DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+ 35  	 RAISE;
+ 36  END;
+ 37  /
+  insert_items(lv_items);
+  *
+ERROR at line 26:
+ORA-06550: line 26, column 3:
+PLS-00905: object STUDENT.INSERT_ITEMS is invalid
+ORA-06550: line 26, column 3:
+PL/SQL: Statement ignored 
+
+
+SQL> 
+SQL> -- Query Results
+SQL> COL item_barcode FORMAT A10 HEADING "Item|Barcode"
+SQL> COL item_title   FORMAT A36 HEADING "Item Title"
+SQL> COL release_date FORMAT A12 HEADING "Item|Release|Date"
+SQL> SELECT   i.item_barcode
+  2  ,	      i.item_title
+  3  ,	      i.item_release_date AS release_date
+  4  FROM     item i
+  5  WHERE    REGEXP_LIKE(i.item_title,'^.*bourne.*$','i')
+  6  OR       REGEXP_LIKE(i.item_title,'^.*inferno.*$','i')
+  7  OR       REGEXP_LIKE(i.item_title,'^.*hunger.*$','i')
+  8  ORDER BY CASE
+  9  		WHEN REGEXP_LIKE(i.item_title,'^.*bourne.*$','i')  THEN 1
+ 10  		WHEN REGEXP_LIKE(i.item_title,'^.*hunger.*$','i')  THEN 2
+ 11  		WHEN REGEXP_LIKE(i.item_title,'^.*inferno.*$','i') THEN 3
+ 12  	      END
+ 13  ,	      i.item_release_date;
+
+                                                Item                            
+Item                                            Release                         
+Barcode    Item Title                           Date                            
+---------- ------------------------------------ ------------                    
+B002ZHKZCO The Bourne Identity                  19-JAN-10                       
+B0068FZ18C The Bourne Supremacy                 10-JAN-12                       
+B00AIZK85E The Bourne Ultimatum                 11-DEC-12                       
+B01AT251XY The Bourne Legacy                    05-APR-16                       
+B01IOHVPA8 Jason Bourne                         06-DEC-16                       
+B0084IG7KC The Hunger Games                     18-AUG-12                       
+B008JFUS8M The Hunger Games: Catching Fire      07-MAR-14                       
+B00PYLT4YI The Hunger Games: Mockingjay Part 1  06-MAR-15                       
+B01LTHWTHO Inferno                              24-JAN-17                       
+
+9 rows selected.
+
+SQL> 
+SQL> SPOOL OFF;
+SQL> 
+SQL> -- Query Results
+SQL> COL error_id     FORMAT 999999  HEADING "Error|ID #"
+SQL> COL object_name  FORMAT A20     HEADING "Object Name"
+SQL> COL module_name  FORMAT A20     HEADING "Module Name"
+SQL> COL sqlerror_code	FORMAT A10   HEADING "Error|ID #"
+SQL> SELECT   ne.error_id
+  2  ,	      ne.object_name
+  3  ,	      ne.module_name
+  4  ,	      ne.sqlerror_code
+  5  FROM     nc_error ne
+  6  ORDER BY 1 DESC;
+
+  Error                                           Error                         
+   ID # Object Name          Module Name          ID #                          
+------- -------------------- -------------------- ----------                    
+      1 Test Object          Test Module          ORA-00001                     
+
+1 row selected.
+
+SQL> 
+SQL> SPOOL OFF;

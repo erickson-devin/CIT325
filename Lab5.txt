@@ -1,0 +1,56 @@
+
+RATING_AGENCY_ID RATING   RATI                                                  
+---------------- -------- ----                                                  
+            1001 PG       MPAA                                                  
+            1002 T        ESRB                                                  
+            1003 R        MPAA                                                  
+            1004 NR       MPAA                                                  
+            1005 PG-13    MPAA                                                  
+            1006 E10+     ESRB                                                  
+            1007 G        MPAA                                                  
+
+7 rows selected.
+
+
+TABLE_NAME         COLUMN_ID COLUMN_NAME            NULLABLE DATA_TYPE          
+------------------ --------- ---------------------- -------- ------------       
+ITEM                       1 ITEM_ID                NOT NULL NUMBER(22)         
+ITEM                       2 ITEM_BARCODE           NOT NULL VARCHAR2(20)       
+ITEM                       3 ITEM_TYPE              NOT NULL NUMBER(22)         
+ITEM                       4 ITEM_TITLE             NOT NULL VARCHAR2(60)       
+ITEM                       5 ITEM_SUBTITLE                   VARCHAR2(60)       
+ITEM                       6 ITEM_DESC              NOT NULL CLOB               
+ITEM                       7 ITEM_PHOTO                      BFILE              
+ITEM                       8 ITEM_RATING            NOT NULL VARCHAR2(8)        
+ITEM                       9 ITEM_RATING_AGENCY     NOT NULL VARCHAR2(4)        
+ITEM                      10 ITEM_RELEASE_DATE      NOT NULL DATE               
+ITEM                      11 CREATED_BY             NOT NULL NUMBER(22)         
+ITEM                      12 CREATION_DATE          NOT NULL DATE               
+ITEM                      13 LAST_UPDATED_BY        NOT NULL NUMBER(22)         
+ITEM                      14 LAST_UPDATE_DATE       NOT NULL DATE               
+ITEM                      15 RATING_AGENCY_ID                NUMBER(22)         
+
+15 rows selected.
+
+
+Type created.
+
+
+Type created.
+
+
+PL/SQL procedure successfully completed.
+
+
+RATING_AGENCY_ID   COUNT(*)                                                     
+---------------- ----------                                                     
+            1001         26                                                     
+            1002          7                                                     
+            1003          7                                                     
+            1004          3                                                     
+            1005         45                                                     
+            1006          3                                                     
+            1007          2                                                     
+
+7 rows selected.
+
